@@ -13,23 +13,23 @@ console.log(inputs);
 var apiEndpoint = 'http://api.soundcloud.com/users/' + inputs.artistId;
 var tracksUrl = apiEndpoint + '/tracks.json?client_id=' + inputs.sampleClientId;
 var followingsUrl = apiEndpoint + '/followings.json?client_id=' + inputs.sampleClientId;
-var loopField = 'username';
 
 // Get data from API, parse and print
 http.get(followingsUrl, function(res) {
   console.log("Got response: " + res.statusCode);
   console.log("Got headers: " + JSON.stringify(res.headers));
   res.setEncoding('utf8');
-  // Get all the data first...
+  // Get all the data
   var bodyData = '';
   res.on('data', function (chunk) {
     bodyData += chunk;
   });
-  // then do other stuff
+  // Parse and store
   res.on('end', function() {
     var bodyArray = JSON.parse(bodyData);
     for (var i = 0; i < bodyArray.length; i++){
-      console.log(bodyArray[i][loopField]);
+      var record = bodyArray[i];
+      console.log(record['id'] + ' ' + record['username'] + ' ' + record['followers_count']);
     }
   });
 }).on('error', function(e) {
