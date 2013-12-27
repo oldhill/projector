@@ -24,12 +24,20 @@ http.get(followingsUrl, function(res) {
   res.on('data', function (chunk) {
     bodyData += chunk;
   });
-  // Parse and store
+  // Parse and store once request is complete
   res.on('end', function() {
-    var bodyArray = JSON.parse(bodyData);
-    for (var i = 0; i < bodyArray.length; i++){
-      var record = bodyArray[i];
+    var bodyObject = JSON.parse(bodyData);
+    for (var i = 0; i < bodyObject.length; i++){
+      var record = bodyObject[i];
       console.log(record['id'] + ' ' + record['username'] + ' ' + record['followers_count']);
+      // Append to file -- creates file if !already exist
+      fs.appendFile('test.json', JSON.stringify(bodyObject[i], null, 4), function (err) {
+        if (err) { 
+          throw err;
+        } else {
+          console.log('File successfully written.');
+        }
+      });
     }
   });
 }).on('error', function(e) {
